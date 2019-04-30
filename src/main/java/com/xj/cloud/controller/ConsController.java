@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.xj.cloud.pojo.User;
+import com.xj.cloud.service.UserFeignClient;
 
 @RestController
 public class ConsController {
@@ -21,6 +22,9 @@ public class ConsController {
 	private RestTemplate res;
 	@Autowired
 	private LoadBalancerClient lbc;
+	
+	@Autowired
+	private UserFeignClient ufc;
 
 	@GetMapping("/user/{id}")
 	public User findById(@PathVariable Long id) {
@@ -33,5 +37,10 @@ public class ConsController {
 	public void logUserInstance() {
 		ServiceInstance serviceIns = lbc.choose("ProviderUser");
 		log.info("{}:{}:{}",serviceIns.getServiceId(),serviceIns.getHost(),serviceIns.getPort());
+	}
+	
+	@GetMapping("/feign/user/{id}")
+	public User findByIdFeign(@PathVariable("id") Long id) {
+		return ufc.findById(id);
 	}
 }
