@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.xj.cloud.pojo.User;
-import com.xj.cloud.service.impl.FeignClientFallback;
+import com.xj.cloud.service.impl.FeignClientFallbackFactory;
 
-@FeignClient(name = "ProviderUser", fallback = FeignClientFallback.class)
-public interface UserFeignClient {
+@FeignClient(name = "ProviderUser", fallbackFactory = FeignClientFallbackFactory.class)
+public interface UserFeignClientAndHystrix {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public User findById(@PathVariable("id") Long id);

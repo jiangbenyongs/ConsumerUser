@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.xj.cloud.pojo.User;
 import com.xj.cloud.service.UserFeignClient;
+import com.xj.cloud.service.UserFeignClientAndHystrix;
 
 @RestController
 public class ConsController {
@@ -25,6 +26,9 @@ public class ConsController {
 
 	@Autowired
 	private UserFeignClient ufc;
+	
+	@Autowired
+	private UserFeignClientAndHystrix ufcah;
 
 	@GetMapping("/user/{id}")
 	public User findById(@PathVariable Long id) {
@@ -39,6 +43,10 @@ public class ConsController {
 		log.info("{}:{}:{}", serviceIns.getServiceId(), serviceIns.getHost(), serviceIns.getPort());
 	}
 
+	/**
+	 * 使用feign
+	 * hystrix整合feign
+	 */
 	@GetMapping("/feign/user/{id}")
 	public User findByIdFeign(@PathVariable("id") Long id) {
 		return ufc.findById(id);
@@ -46,6 +54,7 @@ public class ConsController {
 
 	/**
 	 * use Hystrix
+	 * spring cloud的容错机制
 	 */
 	@HystrixCommand(fallbackMethod = "findByIdHystrixFallback")
 	@GetMapping("/hystrix/user/{id}")
@@ -55,10 +64,24 @@ public class ConsController {
 
 	}
 	
+	/**
+	 * fallbackMethod
+	 * 该函数的入参必须跟调用该函数的入参一样
+	 */
 	public User findByIdHystrixFallback(Long id) {
 		User user = new User();
 		user.setId(-1L);
 		user.setName("default");
 		return user;
+	}
+	
+	/**
+	 * feign整合hystrix factory
+	 */
+	@GetMapping("/feignAndHystrix/user/{id}")
+	public User findByIdFeignAndHystrix(@PathVariable Long id) {
+		
+		return ufcah.findById(id);
+		
 	}
 }
