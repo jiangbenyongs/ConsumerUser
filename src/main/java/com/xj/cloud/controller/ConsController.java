@@ -58,7 +58,7 @@ public class ConsController {
 	 */
 	@HystrixCommand(fallbackMethod = "findByIdHystrixFallback")
 	@GetMapping("/hystrix/user/{id}")
-	public User findByIdHystrix(@PathVariable Long id) {
+	public User findByIdHystrix(@PathVariable("id") Long id) {
 		
 		return this.res.getForObject("http://ProviderUser/" + id, User.class);
 
@@ -79,7 +79,7 @@ public class ConsController {
 	 * feign整合hystrix factory
 	 */
 	@GetMapping("/feignAndHystrix/user/{id}")
-	public User findByIdFeignAndHystrix(@PathVariable Long id) {
+	public User findByIdFeignAndHystrix(@PathVariable("id") Long id) {
 		
 		return ufcah.findById(id);
 		

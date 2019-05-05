@@ -5,16 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.xj.cloud.pojo.User;
-import com.xj.cloud.service.UserFeignClient;
+import com.xj.cloud.service.UserFeignClientAndHystrix;
 
 import feign.hystrix.FallbackFactory;
 @Component
-public class FeignClientFallbackFactory implements FallbackFactory<UserFeignClient> {
+public class FeignClientFallbackFactory implements FallbackFactory<UserFeignClientAndHystrix> {
 	private static final Logger logger = LoggerFactory.getLogger(FeignClientFallbackFactory.class);
 
 	@Override
-	public UserFeignClient create(Throwable cause) {
-		return new UserFeignClient() {
+	public UserFeignClientAndHystrix create(Throwable cause) {
+		return new UserFeignClientAndHystrix() {
 			@Override
 			public User findById(Long id) {
 				logger.info("fallback reason is:" + cause);
@@ -28,7 +28,8 @@ public class FeignClientFallbackFactory implements FallbackFactory<UserFeignClie
 				return user;
 			}
 		};
-		
 	}
+
+
 
 }

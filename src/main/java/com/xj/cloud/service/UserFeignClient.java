@@ -11,6 +11,6 @@ import com.xj.cloud.service.impl.FeignClientFallback;
 @FeignClient(name = "ProviderUser", fallback = FeignClientFallback.class)
 public interface UserFeignClient {
 
-	@RequestMapping(value = "/feign/user/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public User findById(@PathVariable("id") Long id);
 }
