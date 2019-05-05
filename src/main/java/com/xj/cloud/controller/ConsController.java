@@ -55,7 +55,7 @@ public class ConsController {
 
 	}
 	
-	public User findByIdHystrixFallback() {
+	public User findByIdHystrixFallback(Long id) {
 		User user = new User();
 		user.setId(-1L);
 		user.setName("default");
