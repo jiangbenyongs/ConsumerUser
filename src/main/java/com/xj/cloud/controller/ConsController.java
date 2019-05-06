@@ -29,21 +29,29 @@ public class ConsController {
 	
 	@Autowired
 	private UserFeignClientAndHystrix ufcah;
-
+	
+	/*
+	 * 服务在注册中心注册  
+	 * 直接通过注册名访问
+	 */
 	@GetMapping("/user/{id}")
 	public User findById(@PathVariable Long id) {
 
 		return res.getForObject("http://ProviderUser/" + id, User.class);
 
 	}
-
+	
+	/*
+	 * ribbion负载
+	 * 判断选择的实例
+	 */
 	@GetMapping("/log-user-instance")
 	public void logUserInstance() {
 		ServiceInstance serviceIns = lbc.choose("ProviderUser");
 		log.info("{}:{}:{}", serviceIns.getServiceId(), serviceIns.getHost(), serviceIns.getPort());
 	}
 
-	/**
+	/*
 	 * 使用feign
 	 * hystrix整合feign
 	 */
@@ -52,7 +60,7 @@ public class ConsController {
 		return ufc.findById(id);
 	}
 
-	/**
+	/*
 	 * use Hystrix
 	 * spring cloud的容错机制
 	 */
@@ -64,7 +72,7 @@ public class ConsController {
 
 	}
 	
-	/**
+	/*
 	 * fallbackMethod
 	 * 该函数的入参必须跟调用该函数的入参一样
 	 */
@@ -75,7 +83,8 @@ public class ConsController {
 		return user;
 	}
 	
-	/**
+	/*
+	 * 容错
 	 * feign整合hystrix factory
 	 */
 	@GetMapping("/feignAndHystrix/user/{id}")
